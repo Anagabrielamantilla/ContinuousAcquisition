@@ -1,0 +1,39 @@
+_wandb:
+    value:
+        cli_version: 0.21.0
+        e:
+            s8sfyhwg2yr87fupwcbi9g0ji2666m4z:
+                codePath: main.py
+                codePathLocal: main.py
+                cpu_count: 6
+                cpu_count_logical: 12
+                disk:
+                    /:
+                        total: "1000202039296"
+                        used: "14004228096"
+                email: luis.miguel.rl@hotmail.com
+                executable: D:\Github\ContinuousAcquisition\.venv\Scripts\python.exe
+                host: DESKTOP-GQ5IBM3
+                memory:
+                    total: "34247196672"
+                os: Windows-11-10.0.26100-SP0
+                program: D:\Github\ContinuousAcquisition\main.py
+                python: CPython 3.13.2
+                root: D:\Github\ContinuousAcquisition
+                startedAt: "2025-08-01T23:53:38.314496Z"
+                writerId: s8sfyhwg2yr87fupwcbi9g0ji2666m4z
+        m: []
+        python_version: 3.13.2
+        t:
+            "1":
+                - 1
+            "2":
+                - 1
+            "3":
+                - 13
+            "4": 3.13.2
+            "5": 0.21.0
+            "8":
+                - 3
+            "12": 0.21.0
+            "13": windows-amd64

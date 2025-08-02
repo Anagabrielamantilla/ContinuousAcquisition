@@ -10,8 +10,8 @@ import torch.optim as optim
 from matplotlib import gridspec
 import matplotlib.pyplot as plt
 
-wandb.login(key="d4d6be3e67d35616aec5ede205c72296825c4db1")
-wandb.init(project="ANA_CONTINOUS_ACQUISITION", name="E1")
+wandb.login(key="29302aca9a6946fea3f9a038c6f03dce10af7b91")
+wandb.init(project="geofisica", name="E1")
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -69,7 +69,9 @@ for epoch in trange(epochs, desc="Entrenamiento"):
         loss1 = criterion(first_term, second_term)
         
         distance_m1, distance_m2 = binary_distance(batch_M1, M2)
-        loss2 = 1e-1*criterion(distance_m1/128, distance_m2/128)
+        #loss2 = 1e-1*criterion(distance_m1/128, distance_m2/128)
+        loss2 = torch.exp(-criterion(distance_m1/128, distance_m2/128))
+
         
         #loss3 = reg(M2)
         #loss3 = torch.sum((1-M1[0,0,0,:])*M2[0,0,0,:])
@@ -88,9 +90,9 @@ for epoch in trange(epochs, desc="Entrenamiento"):
     #loss_mean = list_loss1.mean()
     # Logging
     wandb.log({
-         "loss": loss1.mean().item(),
-         "loss1": loss1.item(),
-         "loss2": loss2.item()
+        "loss": loss1.mean().item(),
+        "loss1": loss1.item(),
+        "loss2": loss2.item()
         }, step=epoch)
 
         # Visualización

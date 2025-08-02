@@ -1,0 +1,50 @@
+Maximum value of S tensor(1.)
+Minimum value of S tensor(-1.)
+Entrenamiento:   0%|                                                                                                                      | 0/100 [03:08<?, ?it/s]
+Columnas removidas: 65
+Columnas removidas: 65
+Columnas removidas: 65
+Columnas removidas: 65
+Columnas removidas: 65
+Columnas removidas: 65
+Columnas removidas: 65
+Columnas removidas: 65
+Columnas removidas: 65
+Columnas removidas: 66
+Columnas removidas: 66
+Columnas removidas: 66
+Columnas removidas: 66
+Columnas removidas: 67
+Columnas removidas: 67
+Traceback (most recent call last):
+  File "D:\Github\ContinuousAcquisition\main.py", line 85, in <module>
+    loss.backward()
+    ~~~~~~~~~~~~~^^
+  File "D:\Github\ContinuousAcquisition\.venv\Lib\site-packages\torch\_tensor.py", line 648, in backward
+    torch.autograd.backward(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        self, gradient, retain_graph, create_graph, inputs=inputs
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "D:\Github\ContinuousAcquisition\.venv\Lib\site-packages\torch\autograd\__init__.py", line 353, in backward
+    _engine_run_backward(
+    ~~~~~~~~~~~~~~~~~~~~^
+        tensors,
+        ^^^^^^^^
+    ...<5 lines>...
+        accumulate_grad=True,
+        ^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "D:\Github\ContinuousAcquisition\.venv\Lib\site-packages\torch\autograd\graph.py", line 824, in _engine_run_backward
+    return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        t_outputs, *args, **kwargs
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )  # Calls into the C++ engine to run the backward pass
+    ^
+  File "D:\Github\ContinuousAcquisition\.venv\Lib\site-packages\torch\autograd\function.py", line 292, in apply
+    def apply(self, *args):
+
+KeyboardInterrupt
