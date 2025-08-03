@@ -77,7 +77,7 @@ for epoch in trange(epochs, desc="Entrenamiento"):
         #loss3 = torch.sum((1-M1[0,0,0,:])*M2[0,0,0,:])
         loss3 = torch.mean(M2*batch_M1)
 
-        loss = loss1 - loss2 + loss3
+        loss = loss1 + loss2 + loss3
 
         list_loss1.append(loss1.item())
         list_loss2.append(loss2.item())
