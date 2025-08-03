@@ -1,0 +1,24 @@
+{
+  "os": "Windows-11-10.0.26100-SP0",
+  "python": "CPython 3.13.2",
+  "startedAt": "2025-08-03T01:03:01.531273Z",
+  "program": "D:\\Github\\ContinuousAcquisition\\main.py",
+  "codePath": "main.py",
+  "codePathLocal": "main.py",
+  "email": "luis.miguel.rl@hotmail.com",
+  "root": "D:\\Github\\ContinuousAcquisition",
+  "host": "DESKTOP-GQ5IBM3",
+  "executable": "D:\\Github\\ContinuousAcquisition\\.venv\\Scripts\\python.exe",
+  "cpu_count": 6,
+  "cpu_count_logical": 12,
+  "disk": {
+    "/": {
+      "total": "1000202039296",
+      "used": "14007574528"
+    }
+  },
+  "memory": {
+    "total": "34247196672"
+  },
+  "writerId": "om0dy0cmnoxd0pydmrq0t7p5irnlt76o"
+}
