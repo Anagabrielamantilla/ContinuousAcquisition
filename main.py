@@ -69,15 +69,15 @@ for epoch in trange(epochs, desc="Entrenamiento"):
         loss1 = criterion(first_term, second_term)
         
         distance_m1, distance_m2 = binary_distance(batch_M1, M2)
-        #loss2 = 1e-1*criterion(distance_m1/128, distance_m2/128)
-        loss2 = torch.exp(-criterion(distance_m1/128, distance_m2/128))
+        loss2 = 1e-1*criterion(distance_m1/128, distance_m2/128)
+        #loss2 = torch.exp(-criterion(distance_m1/128, distance_m2/128))
 
         
         #loss3 = reg(M2)
         #loss3 = torch.sum((1-M1[0,0,0,:])*M2[0,0,0,:])
         loss3 = torch.mean(M2*batch_M1)
 
-        loss = loss1 + loss2 + loss3
+        loss = loss1 + loss3
 
         list_loss1.append(loss1.item())
         list_loss2.append(loss2.item())
@@ -92,7 +92,7 @@ for epoch in trange(epochs, desc="Entrenamiento"):
     wandb.log({
         "loss": loss1.mean().item(),
         "loss1": loss1.item(),
-        "loss2": loss2.item()
+        "loss3": loss3.item()
         }, step=epoch)
 
         # Visualización
