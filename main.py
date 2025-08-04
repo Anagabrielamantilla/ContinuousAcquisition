@@ -9,6 +9,7 @@ from NetworkPaul import *
 import torch.optim as optim
 from matplotlib import gridspec
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 
 wandb.login(key="29302aca9a6946fea3f9a038c6f03dce10af7b91")
 wandb.init(project="geofisica", name="E1")
@@ -69,15 +70,15 @@ for epoch in trange(epochs, desc="Entrenamiento"):
         loss1 = criterion(first_term, second_term)
         
         distance_m1, distance_m2 = binary_distance(batch_M1, M2)
-        loss2 = 1e-1*criterion(distance_m1/128, distance_m2/128)
-        #loss2 = torch.exp(-criterion(distance_m1/128, distance_m2/128))
+        #loss2 = 1e-1*criterion(distance_m1/128, distance_m2/128)
+        loss2 = 1e-1*torch.exp(-criterion(distance_m1/128, distance_m2/128))
 
         
         #loss3 = reg(M2)
         #loss3 = torch.sum((1-M1[0,0,0,:])*M2[0,0,0,:])
         loss3 = torch.mean(M2*batch_M1)
 
-        loss = loss1 + loss3
+        loss = loss1 + loss2 + loss3
 
         list_loss1.append(loss1.item())
         list_loss2.append(loss2.item())
@@ -92,6 +93,7 @@ for epoch in trange(epochs, desc="Entrenamiento"):
     wandb.log({
         "loss": loss1.mean().item(),
         "loss1": loss1.item(),
+        "loss2": loss2.item(),
         "loss3": loss3.item()
         }, step=epoch)
 
@@ -114,30 +116,8 @@ for epoch in trange(epochs, desc="Entrenamiento"):
             imshow_with_colorbar(ax[1, 0], first_term[b0, 0].detach().cpu().numpy(), 'M2*G(T1)')
             imshow_with_colorbar(ax[1, 1], second_term[b0, 0].detach().cpu().numpy(), 'M2*(I-M1)S')
             imshow_with_colorbar(ax[2, 0], M2[b0, 0, :25, :25].detach().cpu().numpy(), 'M2')
-            mask1 = batch_M1[b0, 0, :50, :50].cpu().numpy()
-            mask2 = M2[b0, 0, :50, :50].detach().cpu().numpy()
 
-            # Máscaras para visualización: solo los unos visibles
-            mask1_vis = np.ma.masked_where(mask1 == 0, mask1)
-            mask2_vis = np.ma.masked_where(mask2 == 0, mask2)
-            diff_mask = np.ma.masked_where(mask1 == mask2, mask1)  # puntos donde difieren
 
-            # Colormaps personalizados (puedes ajustar los colores si lo deseas)
-            cm1 = plt.colors.ListedColormap(['black', 'red'])    # M1 en rojo
-            cm2 = plt.colors.ListedColormap(['black', 'green'])  # M2 en verde
-            cmdiff = plt.colors.ListedColormap(['black', 'yellow']) # diferencia en amarillo
-
-            # Fondo negro
-            ax[2, 2].imshow(np.zeros_like(mask1), cmap='gray', interpolation='nearest')
-            # M1 en rojo semi-transparente
-            ax[2, 2].imshow(mask1_vis, cmap=cm1, interpolation='nearest', alpha=0.5)
-            # M2 en verde semi-transparente
-            ax[2, 2].imshow(mask2_vis, cmap=cm2, interpolation='nearest', alpha=0.3)
-            # Diferencia en amarillo más opaco
-            ax[2, 2].imshow(diff_mask, cmap=cmdiff, interpolation='nearest', alpha=0.8)
-
-            
-            
             # Distancia entre máscaras
             ax[1, 2].plot(distance_m1.detach().cpu(), label='Distance M1', marker='o', color='blue')
             ax[1, 2].plot(distance_m2.detach().cpu(), label='Distance M2', marker='x', color='green')
@@ -152,8 +132,25 @@ for epoch in trange(epochs, desc="Entrenamiento"):
             ax[2, 1].plot(list_loss_total, linestyle='-', color='red', label='Loss Total')
             ax[2, 1].set_title('Loss')
             ax[2, 1].legend()
-            
-            ax[2, 2].axis('off')  # espacio libre
+
+            mask1 = batch_M1[b0, 0, :25, :25].cpu().numpy()
+            mask2 = M2[b0, 0, :25, :25].detach().cpu().numpy()
+
+            # Máscaras para visualización: solo los unos visibles
+            mask1_vis = np.ma.masked_where(mask1 == 0, mask1)
+            mask2_vis = np.ma.masked_where(mask2 == 0, mask2)
+
+            # Colormaps personalizados (puedes ajustar los colores si lo deseas)
+            cm1 = mpl.colors.ListedColormap(['blue', 'black'])    # M1 en rojo
+            cm2 = mpl.colors.ListedColormap(['green', 'black'])  # M2 en verde
+
+            # Fondo negro
+            ax[2, 2].set_title('M1 and M2')
+            ax[2, 2].imshow(np.zeros_like(mask1), cmap='gray', interpolation='nearest')
+            # M1 en rojo semi-transparente
+            ax[2, 2].imshow(mask1_vis, cmap=cm1, interpolation='nearest')
+            # M2 en verde semi-transparente
+            ax[2, 2].imshow(mask2_vis, cmap=cm2, interpolation='nearest')
             
             plt.tight_layout()
             wandb.log({"visualización_epoch": wandb.Image(fig)}, step=epoch)
