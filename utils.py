@@ -15,9 +15,9 @@ def uniform_sampling(data, num):
     return data * mask, mask
     
 def binary_distance(M1, M2):
-    receivers_coordinates = torch.arange(0,128).to(device)
+    receivers_coordinates = torch.arange(1,129).to(device)
     fila_M1 = M1[0, 0, 0, :]
-    fila_M2 = M2[0, 0, 0, :] 
+    fila_M2 = M2[0, 0, 0, :]
     
     coord_M1 = fila_M1*receivers_coordinates
     coord_M2 = fila_M2*receivers_coordinates
