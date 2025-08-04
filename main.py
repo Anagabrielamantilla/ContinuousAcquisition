@@ -108,17 +108,29 @@ for epoch in trange(epochs, desc="Entrenamiento"):
                 cbar = plt.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
                 cbar.ax.tick_params(labelsize=8)
 
+            distance_plot = 30
+
             # Usar primer elemento del batch
             b0 = 0
+            m1_i =np.where(batch_M1[b0, 0,0,:] == 0)
+            m1_i_1 =np.where(batch_M1[b0, 0,0,:] == 1)
+            m2_i =np.where(M2[b0, 0,0,:] == 0)
+
+            first_term = first_term.clamp(-1, 1)
+            batch_T1[b0, 0,:, m1_i] = -1
+            first_term[b0, 0,:, m2_i] = -1
+            second_term[b0, 0,:, m2_i] = -1
+            second_term[b0, 0,:, m1_i_1] = -1
+
             imshow_with_colorbar(ax[0, 0], batch_S[b0, 0].cpu().numpy(), 'S')
-            imshow_with_colorbar(ax[0, 1], batch_M1[b0, 0, :25, :25].cpu().numpy(), 'M1')
-            imshow_with_colorbar(ax[0, 2], batch_T1[b0, 0].cpu().numpy(), 'T1')
+            imshow_with_colorbar(ax[0, 1], batch_M1[b0, 0, :distance_plot, :distance_plot].cpu().numpy(), 'M1')
+            imshow_with_colorbar(ax[0, 2], batch_T1[b0, 0,:,].cpu().numpy(), 'T1')
             imshow_with_colorbar(ax[1, 0], first_term[b0, 0].detach().cpu().numpy(), 'M2*G(T1)')
             imshow_with_colorbar(ax[1, 1], second_term[b0, 0].detach().cpu().numpy(), 'M2*(I-M1)S')
-            imshow_with_colorbar(ax[2, 0], M2[b0, 0, :25, :25].detach().cpu().numpy(), 'M2')
+            imshow_with_colorbar(ax[2, 0], M2[b0, 0, :distance_plot, :distance_plot].detach().cpu().numpy(), 'M2')
 
-            x1 = distance_m1.detach().cpu()[:25]
-            x2 = distance_m2.detach().cpu()[:25]
+            x1 = distance_m1.detach().cpu()[:distance_plot]
+            x2 = distance_m2.detach().cpu()[:distance_plot]
 
             x1_nonzero = x1[x1 != 0]
             x2_nonzero = x2[x2 != 0]
@@ -141,8 +153,8 @@ for epoch in trange(epochs, desc="Entrenamiento"):
             ax[2, 1].set_title('Loss')
             ax[2, 1].legend()
 
-            mask1 = batch_M1[b0, 0, :25, :25].cpu().numpy()
-            mask2 = M2[b0, 0, :25, :25].detach().cpu().numpy()
+            mask1 = batch_M1[b0, 0, :distance_plot, :distance_plot].cpu().numpy()
+            mask2 = M2[b0, 0, :distance_plot, :distance_plot].detach().cpu().numpy()
 
             # Máscaras para visualización: solo los unos visibles
             mask1_vis = np.ma.masked_where(mask1 == 0, mask1)
@@ -162,7 +174,8 @@ for epoch in trange(epochs, desc="Entrenamiento"):
 
             blue_patch = mpatches.Patch(color='blue', label='M1')
             red_patch = mpatches.Patch(color='red', label='M2') 
-            ax[2, 2].legend(handles=[blue_patch, red_patch], loc='upper right')
+            black_patch = mpatches.Patch(color='black', label='M1=M2=0') 
+            ax[2, 2].legend(handles=[blue_patch, red_patch, black_patch], loc='upper right')
             
             plt.tight_layout()
             wandb.log({"visualización_epoch": wandb.Image(fig)}, step=epoch)
