@@ -114,7 +114,27 @@ for epoch in trange(epochs, desc="Entrenamiento"):
             imshow_with_colorbar(ax[1, 0], first_term[b0, 0].detach().cpu().numpy(), 'M2*G(T1)')
             imshow_with_colorbar(ax[1, 1], second_term[b0, 0].detach().cpu().numpy(), 'M2*(I-M1)S')
             imshow_with_colorbar(ax[2, 0], M2[b0, 0, :25, :25].detach().cpu().numpy(), 'M2')
-            #imshow_with_colorbar(ax[2, 0], M2[b0, 0].detach().cpu().numpy(), 'M2')
+            mask1 = batch_M1[b0, 0, :50, :50].cpu().numpy()
+            mask2 = M2[b0, 0, :50, :50].detach().cpu().numpy()
+
+            # Máscaras para visualización: solo los unos visibles
+            mask1_vis = np.ma.masked_where(mask1 == 0, mask1)
+            mask2_vis = np.ma.masked_where(mask2 == 0, mask2)
+            diff_mask = np.ma.masked_where(mask1 == mask2, mask1)  # puntos donde difieren
+
+            # Colormaps personalizados (puedes ajustar los colores si lo deseas)
+            cm1 = plt.colors.ListedColormap(['black', 'red'])    # M1 en rojo
+            cm2 = plt.colors.ListedColormap(['black', 'green'])  # M2 en verde
+            cmdiff = plt.colors.ListedColormap(['black', 'yellow']) # diferencia en amarillo
+
+            # Fondo negro
+            ax[2, 2].imshow(np.zeros_like(mask1), cmap='gray', interpolation='nearest')
+            # M1 en rojo semi-transparente
+            ax[2, 2].imshow(mask1_vis, cmap=cm1, interpolation='nearest', alpha=0.5)
+            # M2 en verde semi-transparente
+            ax[2, 2].imshow(mask2_vis, cmap=cm2, interpolation='nearest', alpha=0.3)
+            # Diferencia en amarillo más opaco
+            ax[2, 2].imshow(diff_mask, cmap=cmdiff, interpolation='nearest', alpha=0.8)
             
             
             # Distancia entre máscaras
