@@ -135,6 +135,7 @@ for epoch in trange(epochs, desc="Entrenamiento"):
             ax[2, 2].imshow(mask2_vis, cmap=cm2, interpolation='nearest', alpha=0.3)
             # Diferencia en amarillo más opaco
             ax[2, 2].imshow(diff_mask, cmap=cmdiff, interpolation='nearest', alpha=0.8)
+
             
             
             # Distancia entre máscaras
