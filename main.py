@@ -1,4 +1,3 @@
-
 import time
 import wandb
 import torch
@@ -10,9 +9,10 @@ import torch.optim as optim
 from matplotlib import gridspec
 import matplotlib.pyplot as plt
 import matplotlib as mpl
+import matplotlib.patches as mpatches
 
-wandb.login(key="29302aca9a6946fea3f9a038c6f03dce10af7b91")
-wandb.init(project="geofisica", name="E1")
+wandb.login(key="29302aca9a6946fea3f9a038c6f03dce10af7b91")  ####### ajustar con tu key
+wandb.init(project="geofisica", name="E1") ####### ajustar con tu proyecto
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -117,10 +117,18 @@ for epoch in trange(epochs, desc="Entrenamiento"):
             imshow_with_colorbar(ax[1, 1], second_term[b0, 0].detach().cpu().numpy(), 'M2*(I-M1)S')
             imshow_with_colorbar(ax[2, 0], M2[b0, 0, :25, :25].detach().cpu().numpy(), 'M2')
 
+            x1 = distance_m1.detach().cpu()[:25]
+            x2 = distance_m2.detach().cpu()[:25]
+
+            x1_nonzero = x1[x1 != 0]
+            x2_nonzero = x2[x2 != 0]
+
+            y1 = np.zeros_like(x1_nonzero)
+            y2 = np.zeros_like(x2_nonzero)
 
             # Distancia entre máscaras
-            ax[1, 2].plot(distance_m1.detach().cpu(), label='Distance M1', marker='o', color='blue')
-            ax[1, 2].plot(distance_m2.detach().cpu(), label='Distance M2', marker='x', color='green')
+            ax[1, 2].scatter(x1_nonzero,y1, label='Distance M1', marker='o', color='blue')
+            ax[1, 2].scatter(x2_nonzero,y2, label='Distance M2', marker='x', color='red')
             #ax[1, 2].plot(abs(distance_m1.detach().cpu() - distance_m2.detach().cpu()), color='purple', label='|Dist M1 - M2|')
             ax[1, 2].set_title('B(M1,r1) - B(M2,r2)')
             ax[1, 2].legend()
@@ -142,7 +150,7 @@ for epoch in trange(epochs, desc="Entrenamiento"):
 
             # Colormaps personalizados (puedes ajustar los colores si lo deseas)
             cm1 = mpl.colors.ListedColormap(['blue', 'black'])    # M1 en rojo
-            cm2 = mpl.colors.ListedColormap(['green', 'black'])  # M2 en verde
+            cm2 = mpl.colors.ListedColormap(['red', 'black'])  # M2 en verde
 
             # Fondo negro
             ax[2, 2].set_title('M1 and M2')
@@ -151,6 +159,10 @@ for epoch in trange(epochs, desc="Entrenamiento"):
             ax[2, 2].imshow(mask1_vis, cmap=cm1, interpolation='nearest')
             # M2 en verde semi-transparente
             ax[2, 2].imshow(mask2_vis, cmap=cm2, interpolation='nearest')
+
+            blue_patch = mpatches.Patch(color='blue', label='M1')
+            red_patch = mpatches.Patch(color='red', label='M2') 
+            ax[2, 2].legend(handles=[blue_patch, red_patch], loc='upper right')
             
             plt.tight_layout()
             wandb.log({"visualización_epoch": wandb.Image(fig)}, step=epoch)
