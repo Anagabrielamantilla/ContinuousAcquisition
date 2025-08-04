@@ -114,7 +114,7 @@ for epoch in trange(epochs, desc="Entrenamiento"):
             imshow_with_colorbar(ax[1, 0], first_term[b0, 0].detach().cpu().numpy(), 'M2*G(T1)')
             imshow_with_colorbar(ax[1, 1], second_term[b0, 0].detach().cpu().numpy(), 'M2*(I-M1)S')
             imshow_with_colorbar(ax[2, 0], M2[b0, 0, :25, :25].detach().cpu().numpy(), 'M2')
-            #imshow_with_colorbar(ax[2, 0], M2[b0, 0].detach().cpu().numpy(), 'M2')
+            imshow_with_colorbar(ax[2, 0], np.M2[b0, 0, :50, :50].detach().cpu().numpy()*0.5 + M1[b0, 0, :50, :50].detach().cpu().numpy()*.09, 'M1 and M2')
             
             
             # Distancia entre máscaras
